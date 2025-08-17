@@ -1,0 +1,31 @@
+[init]
+	defaultBranch = main
+[user]
+	email = 38709237+andrader@users.noreply.github.com
+	name = Rubens Filho
+	name = Rubens
+[core]
+	editor = cursor --wait
+	excludesfile = /Users/rubens.filho/.gitignore_global
+	pager = cat
+[alias]
+	br = branch
+	co = checkout
+	ci = commit
+	st = status
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	clean = cleanup
+	dm = !git checkout $(git symbolic-ref HEAD | sed 's!refs/heads/!!') && git pull && git branch --merged | grep -v '\\*' | xargs -n 1 -I % sh -c \"git branch -d % && echo Deleted branch: %\"
+	al = config --get-regexp alias
+	pushc = "!f() { \\\n    branch_name=\"${2:-feat/from-$(echo $1 | cut -c1-7)}\"; \\\n    git checkout -b \"$branch_name\" \"$1\" && \\\n    git push -u origin HEAD; \\\n}; f"
+[diff]
+	tool = cursor
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+[difftool "cursor"]
+	cmd = cursor --wait --diff $LOCAL $REMOTE
+[merge]
+	tool = cursor
