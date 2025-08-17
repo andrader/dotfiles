@@ -95,12 +95,91 @@ The script currently manages these dotfiles:
 
 To add more files, edit the `DOTFILES` array in `install.sh`.
 
+## Aliases for Quick Syncing
+
+For convenience, this repository includes a set of aliases to make syncing changes easier.
+
+### Setup Aliases
+
+Add this line to your `.zshrc` or `.bashrc`:
+
+```bash
+source ~/dotfiles/aliases.sh
+```
+
+Then reload your shell:
+
+```bash
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+### Available Aliases
+
+**Navigation:**
+
+- `dotfiles` or `dots` - Navigate to dotfiles directory
+
+**Quick Sync:**
+
+- `dotsync` or `dotpush` - Add, commit with default message, and push
+- `dotpull` - Pull latest changes from remote
+- `dotquick [message]` - Quick commit and push with custom message
+- `dotupdate` - Pull and show status
+
+**Git Operations:**
+
+- `dotcommit` - Add and commit (interactive)
+- `dotstatus` - Show git status
+- `dotlog` - Show recent commit history
+- `dotdiff` - Show current changes
+
+**Installation:**
+
+- `dotinstall` - Run install script
+- `dotuninstall` - Remove symlinks
+- `dotbackup` - Restore from backup
+
+**Help:**
+
+- `dothelp` - Show help for all aliases
+
+### Usage Examples
+
+```bash
+# Quick sync with default message
+dotsync
+
+# Quick sync with custom message
+dotquick "Update zsh configuration"
+
+# Check what's changed
+dotstatus
+dotdiff
+
+# Pull latest changes
+dotpull
+
+# Interactive commit
+dotcommit -m "Add new vim settings"
+```
+
 ## Workflow
 
 ### Making Changes
 
 1. Edit your dotfiles as usual (they're symlinked, so changes are immediate)
-2. Commit changes:
+2. Sync changes using aliases:
+
+   ```bash
+   # Quick sync with default message
+   dotsync
+
+   # Or with custom message
+   dotquick "Update zsh configuration"
+   ```
+
+   Or manually:
+
    ```bash
    cd ~/dotfiles
    git add .
@@ -109,6 +188,16 @@ To add more files, edit the `DOTFILES` array in `install.sh`.
    ```
 
 ### Updating on Other Machines
+
+Using aliases:
+
+```bash
+dotpull
+# or
+dotupdate
+```
+
+Or manually:
 
 ```bash
 cd ~/dotfiles
@@ -134,6 +223,7 @@ git pull origin main
 ~/dotfiles/
 ├── README.md          # This file
 ├── install.sh         # Installation script
+├── aliases.sh         # Sync aliases for convenience
 ├── backup/           # Backup directory (created automatically)
 │   └── .zshrc.20240101_120000
 ├── .zshrc            # Your dotfiles
