@@ -127,6 +127,29 @@ restore_backup() {
     fi
 }
 
+# Function to add aliases.sh to .zshrc if not present
+add_aliases_to_zshrc() {
+    local zshrc_file="$HOME_DIR/.zshrc"
+    local aliases_line="source $DOTFILES_DIR/aliases.sh"
+    
+    # Check if .zshrc exists
+    if [[ ! -f "$zshrc_file" ]]; then
+        print_warning ".zshrc not found, skipping aliases.sh setup"
+        return
+    fi
+    
+    # Check if aliases.sh is already sourced
+    if grep -q "source.*dotfiles/aliases\.sh" "$zshrc_file"; then
+        print_info "aliases.sh is already sourced in .zshrc"
+        return
+    fi
+    
+    # Add the source line to .zshrc
+    echo "" >> "$zshrc_file"
+    echo "$aliases_line" >> "$zshrc_file"
+    print_success "Added aliases.sh to .zshrc"
+}
+
 # Function to uninstall (remove symlinks, restore original files)
 uninstall() {
     print_info "Uninstalling dotfiles symlinks..."
@@ -157,6 +180,9 @@ install() {
     for file in "${DOTFILES[@]}"; do
         install_dotfile "$file"
     done
+    
+    # Add aliases.sh to .zshrc if not already present
+    add_aliases_to_zshrc
     
     echo
     print_success "Dotfiles installation completed!"

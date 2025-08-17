@@ -205,4 +205,6 @@ gomain() {
     echo "Stash popped"; 
   fi 
   }
-source ~/dotfiles/aliases.sh
+
+
+source /Users/rubens.filho/projects/dotfiles/aliases.sh
