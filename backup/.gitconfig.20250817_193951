@@ -1,0 +1,21 @@
+[user]
+	name = andrader
+	email = 38709237+andrader@users.noreply.github.com
+[init]
+	defaultBranch = main
+[core]
+	editor = code --wait
+	pager = cat
+[sequence]
+	editor = code --wait --reuse-window
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[alias]
+	co = checkout
+	br = branch
+	st = status
+	dm = "!f(){ set -e; git checkout main; before=$(git stash list | wc -l); git stash push -u -m \"auto-stash before pull\" >/dev/null 2>&1 || true; after=$(git stash list | wc -l); git pull --ff-only; git branch --merged main | egrep -v \"^\\*|main\" | xargs -r git branch -d; if [ \"$after\" -gt \"$before\" ]; then git stash pop --index || true; fi; }; f"
