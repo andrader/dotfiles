@@ -130,7 +130,10 @@ restore_backup() {
 # Function to add aliases.sh to .zshrc if not present
 add_aliases_to_zshrc() {
     local zshrc_file="$HOME_DIR/.zshrc"
-    local aliases_line="source $DOTFILES_DIR/aliases.sh"
+    
+    # Convert absolute path to relative path from home directory
+    local relative_path="${DOTFILES_DIR#$HOME_DIR/}"
+    local aliases_line="source ~/$relative_path/aliases.sh"
     
     # Check if .zshrc exists
     if [[ ! -f "$zshrc_file" ]]; then
@@ -147,7 +150,7 @@ add_aliases_to_zshrc() {
     # Add the source line to .zshrc
     echo "" >> "$zshrc_file"
     echo "$aliases_line" >> "$zshrc_file"
-    print_success "Added aliases.sh to .zshrc"
+    print_success "Added aliases.sh to .zshrc (using relative path: ~/$relative_path/aliases.sh)"
 }
 
 # Function to uninstall (remove symlinks, restore original files)

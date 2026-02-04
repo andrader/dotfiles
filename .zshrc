@@ -139,6 +139,8 @@ setopt hist_verify
 # completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
+bindkey '\e[1;3C' forward-word # for VSCode/Cursor
+bindkey '\e[1;3D' backward-word # for VSCode/Cursor
 
 
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -208,3 +210,16 @@ gomain() {
 
 
 source /Users/rubens.filho/projects/dotfiles/aliases.sh
+alias c='cursor'
+alias ch='cursor .'
+export PATH="$HOME/.local/bin:$PATH"
+
+# Added by Antigravity
+export PATH="/Users/rubens.filho/.antigravity/antigravity/bin:$PATH"
+
+# bun completions
+[ -s "/Users/rubens.filho/.bun/_bun" ] && source "/Users/rubens.filho/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
