@@ -11,7 +11,6 @@ fi
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -114,97 +113,64 @@ source $ZSH/oh-my-zsh.sh
 
 
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-
-# source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+
+
+# AUTOCOMPLETION
+
+# initialize autocompletion
+autoload -U compinit
+compinit
 
 
 # history setup
-HISTFILE=$HOME/.zhistory
-SAVEHIST=1000
-HISTSIZE=999
-setopt share_history
-setopt hist_expire_dups_first
-setopt hist_ignore_dups
-setopt hist_verify
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=9999
+setopt EXTENDED_HISTORY        # Save timestamp with history entries
+setopt HIST_IGNORE_DUPS        # Ignore duplicate commands in history
+setopt HIST_IGNORE_SPACE       # Ignore commands starting with space
+setopt HIST_SAVE_NO_DUPS       # Do not save duplicate commands in history file
+setopt HIST_EXPIRE_DUPS_FIRST  # Expire duplicates first when trimming history
+setopt HIST_FIND_NO_DUPS     # Do not show duplicates when searching history
+setopt HIST_IGNORE_ALL_DUPS # Ignore all duplicates in history
+setopt HIST_VERIFY         # Verify history expansion before executing
+setopt HIST_REDUCE_BLANKS # Remove superfluous blanks from history entries
+setopt SHARE_HISTORY       # Share history across all sessions
+setopt COMPLETE_IN_WORD    # Allow completion to be triggered in the middle of a word
 
-# completion using arrow keys (based on history)
-bindkey '^[[A' history-search-backward
-bindkey '^[[B' history-search-forward
+# autocompletion using arrow keys (based on history)
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/home/rubens/completions:"* ]]; then export FPATH="/home/rubens/completions:$FPATH"; fi
 
-
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-alias ls="eza --icons=always"
-
-# ---- Zoxide (better cd) ----
-eval "$(zoxide init zsh)"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# alias cd="z"
-
-
-
-# Add quarto to the path
-if [[ -d /Users/rubens.filho/Applications/quarto/bin ]]; then
-  export PATH="/Users/rubens.filho/Applications/quarto/bin:$PATH"
-fi
-
-alias dcub="clear && source .env && docker-compose up --build"
-alias dcubn="clear && source .env && docker-compose up --build --no-log-prefix"
-alias dc='docker-compose'
-alias dcdv='docker-compose down -v'
+# Aliases
 alias act='source .venv/bin/activate'
-alias dce='docker-compose exec'
-alias dcu='docker-compose up'
-alias docker=podman
+alias deact='deactivate'
 
+# Syntax highlighting
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Autosuggestions
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-alias "awslogin"="saml2aws login --browser-type=chrome && aws sts get-caller-identity --no-cli-pager"
-alias precommit="pre-commit"
-alias prec="pre-commit"
+. "$HOME/.local/bin/env"
+. "/home/rubens/.deno/env"
+source /home/rubens/projects/dotfiles/aliases.sh
 
-pym() { 
-  local module="${1//\//.}"
-  module="${module%.py}"
-  echo "running: python -m $module ${@:2}"
-  python -m "$module" "${@:2}"
-}
+# bun completions
+[ -s "/home/rubens/.bun/_bun" ] && source "/home/rubens/.bun/_bun"
 
-adlias() {
-  if [[ $# -ne 1 || ! "$1" =~ ^[^=]+=[^=]+$ ]]; then
-    echo "Usage: adlias name=alias_cmd"
-    return 1
-  fi
-  
-  local alias_name="${1%%=*}"
-  local alias_cmd="${1#*=}"
-  
-  echo "alias $alias_name=\"$alias_cmd\"" >> ~/.zshrc
-  source ~/.zshrc
-  echo "Added alias: $alias_name=\"$alias_cmd\""
-}
-gomain() { 
-  stash_created=0; 
-  git stash -u | grep -q 'Saved' && stash_created=1 && echo "Stash created"; 
-  git checkout main && git pull && git dm; 
-  if [ $stash_created -eq 1 ]; then 
-    git stash pop; 
-    echo "Stash popped"; 
-  fi 
-  }
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
-
-source /Users/rubens.filho/projects/dotfiles/aliases.sh
+# R library path
+export LD_LIBRARY_PATH="$(R RHOME)/lib:${LD_LIBRARY_PATH}"
+alias c='clear'

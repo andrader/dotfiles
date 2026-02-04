@@ -38,7 +38,3 @@ dotquick() {
         echo "Dotfiles synced with message: $message"
     )
 }
-
-
-
-echo "Dotfiles aliases loaded! Type 'dothelp' for available commands."
