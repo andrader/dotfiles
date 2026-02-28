@@ -42,3 +42,41 @@ dotquick() {
 
 
 echo "Dotfiles aliases loaded! Type 'dothelp' for available commands."
+
+##############
+# Aliases
+alias act='source .venv/bin/activate'
+alias deact='deactivate'
+alias c='clear'
+alias precommit="pre-commit"
+alias prec="pre-commit"
+
+pym() { 
+  local module="${1//\//.}"
+  module="${module%.py}"
+  echo "running: python -m $module ${@:2}"
+  python -m "$module" "${@:2}"
+}
+
+adlias() {
+  if [[ $# -ne 1 || ! "$1" =~ ^[^=]+=[^=]+$ ]]; then
+    echo "Usage: adlias name=alias_cmd"
+    return 1
+  fi
+  
+  local alias_name="${1%%=*}"
+  local alias_cmd="${1#*=}"
+  
+  echo "alias $alias_name=\"$alias_cmd\"" >> ~/.zshrc
+  source ~/.zshrc
+  echo "Added alias: $alias_name=\"$alias_cmd\""
+}
+gomain() { 
+  stash_created=0; 
+  git stash -u | grep -q 'Saved' && stash_created=1 && echo "Stash created"; 
+  git checkout main && git pull && git dm; 
+  if [ $stash_created -eq 1 ]; then 
+    git stash pop; 
+    echo "Stash popped"; 
+  fi 
+  }
