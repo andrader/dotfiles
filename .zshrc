@@ -1,14 +1,23 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+# ZSH_THEME="powerlevel10k/powerlevel10k"
+eval "$(starship init zsh)"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -70,7 +79,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git python zsh-interactive-cd uv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -103,4 +112,106 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-source /Users/rubens/projetos/dotfiles/aliases.sh
+
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+eval "$(starship init zsh)"
+
+# AUTOCOMPLETION
+
+# initialize autocompletion (mac?)
+# autoload -U compinit
+# compinit
+
+
+# history setup
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=9999
+setopt EXTENDED_HISTORY        # Save timestamp with history entries
+setopt HIST_IGNORE_DUPS        # Ignore duplicate commands in history
+setopt HIST_IGNORE_SPACE       # Ignore commands starting with space
+setopt HIST_SAVE_NO_DUPS       # Do not save duplicate commands in history file
+setopt HIST_EXPIRE_DUPS_FIRST  # Expire duplicates first when trimming history
+setopt HIST_FIND_NO_DUPS     # Do not show duplicates when searching history
+setopt HIST_IGNORE_ALL_DUPS # Ignore all duplicates in history
+setopt HIST_VERIFY         # Verify history expansion before executing
+setopt HIST_REDUCE_BLANKS # Remove superfluous blanks from history entries
+setopt SHARE_HISTORY       # Share history across all sessions
+setopt COMPLETE_IN_WORD    # Allow completion to be triggered in the middle of a word
+
+# autocompletion using arrow keys (based on history)
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
+# source aliases
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+ALIASES_FILE="$SCRIPT_DIR/aliases.sh"
+if [ -f "$ALIASES_FILE" ]; then
+  source "$ALIASES_FILE"
+else
+  echo "Warning: Aliases file not found at $ALIASES_FILE"
+fi
+
+# try to load brew zsh autosuggestions
+if [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# try to load brew zsh syntax highlighting
+if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# try use ls replacement
+if command -v eza > /dev/null 2>&1; then
+  alias ls="eza --icons=always"
+fi
+
+
+# try to load zoxide for enhanced cd functionality
+if command -v zoxide > /dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+  alias cd="z"
+fi
+
+
+# ------
+
+
+# bun completions
+[ -s "/home/rubens/.bun/_bun" ] && source "/home/rubens/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# R library path
+if command -v R > /dev/null 2>&1; then
+  export LD_LIBRARY_PATH="$(R RHOME)/lib:${LD_LIBRARY_PATH}"
+fi
+
+
+# function to install all extra tools
+function install_extras() {
+  # install bun
+  curl -fsSL https://bun.sh/install | bash
+
+  # install nvm
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+  # install zoxide
+  curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+
+  # install starship
+  curl -sS https://starship.rs/install.sh | sh
+
+  # install zsh-autosuggestions
+  brew install zsh-autosuggestions
+
+  brew install zsh-syntax-highlighting
+
+  
+}

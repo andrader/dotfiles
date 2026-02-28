@@ -40,9 +40,6 @@ dotquick() {
 }
 
 
-
-echo "Dotfiles aliases loaded! Type 'dothelp' for available commands."
-
 ##############
 # Aliases
 alias act='source .venv/bin/activate'
