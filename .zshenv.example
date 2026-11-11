@@ -6,12 +6,16 @@
 # non-interactive ones, so keep it fast and free of output.
 
 # --- PATH / toolchains ------------------------------------------------------
-# uv
+# uv (also covers ~/.local/bin for every other tool: don't re-add it elsewhere)
 export PATH="$HOME/.local/bin:$PATH"
 # Rust (replaces sourcing ~/.cargo/env)
 export CARGO_HOME="$HOME/.local/share/cargo"
 export RUSTUP_HOME="$HOME/.local/share/rustup"
 export PATH="$CARGO_HOME/bin:$PATH"
+# Keep PATH entries unique: array assignment dedupes (scalar `export PATH=` does
+# not). .zshrc repeats this at the end, after brew/path_helper add their entries.
+typeset -U path
+path=($path)
 
 # --- Keep $HOME tidy: relocate tool config/state (XDG) ----------------------
 export XDG_CONFIG_HOME="$HOME/.config"

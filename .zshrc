@@ -230,12 +230,6 @@ export HOMEBREW_AUTO_UPDATE_SECS=15552000
 export HOMEBREW_NO_ENV_HINTS=1
 
 
-export PATH="$HOME/bin:$PATH"
-
-
-# Added by Antigravity CLI installer
-export PATH="/Users/rubens/.local/bin:$PATH"
-
 # pnpm
 export PNPM_HOME="/Users/rubens/Library/pnpm"
 case ":$PATH:" in
@@ -243,9 +237,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
 # pnpm end
-# >>> deepseek-harness dsh >>>
-export PATH="$HOME/.local/bin:$PATH"
-# <<< deepseek-harness dsh <<<
 
 
 
@@ -255,3 +246,8 @@ fpath=(/Users/rubens/.docker/completions $fpath)
 autoload -Uz compinit
 (( ${+_comps[docker]} )) || compinit
 # End of Docker CLI completions
+
+# De-duplicate PATH (keep first occurrence). Keep this LAST: `export PATH=...`
+# lines above (and brew/path_helper) can add duplicates; array assignment dedupes.
+typeset -U path
+path=("$HOME/.local/bin" $path)   # keep user tools (uv pythons, claude, ...) ahead of brew
