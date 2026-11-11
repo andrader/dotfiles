@@ -28,6 +28,7 @@ path=($path)
 # --- Keep $HOME tidy: relocate tool config/state (XDG) ----------------------
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"                  # .zshrc/.zprofile live here
 export SHELL_SESSION_DIR="$XDG_STATE_HOME/zsh/sessions"
+export HISTFILE="$XDG_STATE_HOME/zsh/history"           # also covers shells that skip .zshrc
 export IPYTHONDIR="$XDG_CONFIG_HOME/ipython"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export npm_config_cache="$XDG_CACHE_HOME/npm"
@@ -41,7 +42,7 @@ export OPENCLAW_STATE_DIR="$XDG_CONFIG_HOME/openclaw"   # OpenClaw state + confi
 #  - DOCKER_CONFIG: Docker Desktop recreates ~/.docker regardless.
 #  - radian history: set `radian.global_history_file` in ~/.config/radian/profile.
 #  - git: ~/.config/git/config is read natively.
-#  - HISTFILE, ZSH, compdump: set in .zshrc.
+#  - ZSH (oh-my-zsh path) and the compdump: set in .zshrc (HISTFILE is set above).
 #  - DSH_HOME: dsh ignores it (it recreated ~/.dsh), so ~/.dsh stays.
 #  - macOS GUI apps (Ollama, VS Code from the Dock) don't read ~/.zshenv.
 
