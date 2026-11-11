@@ -83,6 +83,9 @@ eval "$(starship init zsh)"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git python zsh-interactive-cd)
 
+# extra completion dirs must be on fpath before oh-my-zsh runs compinit
+fpath+=(~/.config/zsh/functions ~/.docker/completions)
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -184,7 +187,7 @@ fi
 
 
 # bun completions
-[ -s "/home/rubens/.bun/_bun" ] && source "/home/rubens/.bun/_bun"
+[ -s "$HOME/.local/share/bun/_bun" ] && source "$HOME/.local/share/bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.local/share/bun"
@@ -226,7 +229,6 @@ function install_extras() {
 export HOMEBREW_AUTO_UPDATE_SECS=15552000
 export HOMEBREW_NO_ENV_HINTS=1
 
-fpath+=~/.config/zsh/functions; autoload -Uz compinit; compinit -d "$ZSH_COMPDUMP"
 
 export PATH="$HOME/bin:$PATH"
 
@@ -248,3 +250,8 @@ export PATH="$HOME/.local/bin:$PATH"
 
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/rubens/.docker/completions $fpath)
+autoload -Uz compinit
+(( ${+_comps[docker]} )) || compinit
+# End of Docker CLI completions
