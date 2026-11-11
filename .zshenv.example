@@ -5,12 +5,20 @@
 # rest of the config lives (ZDOTDIR). It is read by every zsh, including
 # non-interactive ones, so keep it fast and free of output.
 
+# --- XDG base directories (set first: everything below builds on them) -------
+# These match the spec defaults; setting them explicitly helps tools that only
+# honour the variables when set. XDG_RUNTIME_DIR / *_DIRS are left unset on purpose.
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CACHE_HOME="$HOME/.cache"
+
 # --- PATH / toolchains ------------------------------------------------------
 # uv (also covers ~/.local/bin for every other tool: don't re-add it elsewhere)
 export PATH="$HOME/.local/bin:$PATH"
 # Rust (replaces sourcing ~/.cargo/env)
-export CARGO_HOME="$HOME/.local/share/cargo"
-export RUSTUP_HOME="$HOME/.local/share/rustup"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
 export PATH="$CARGO_HOME/bin:$PATH"
 # Keep PATH entries unique: array assignment dedupes (scalar `export PATH=` does
 # not). .zshrc repeats this at the end, after brew/path_helper add their entries.
@@ -18,13 +26,11 @@ typeset -U path
 path=($path)
 
 # --- Keep $HOME tidy: relocate tool config/state (XDG) ----------------------
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_STATE_HOME="$HOME/.local/state"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"                  # .zshrc/.zprofile live here
 export SHELL_SESSION_DIR="$XDG_STATE_HOME/zsh/sessions"
 export IPYTHONDIR="$XDG_CONFIG_HOME/ipython"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
-export npm_config_cache="$HOME/.cache/npm"
+export npm_config_cache="$XDG_CACHE_HOME/npm"
 export LESSHISTFILE="$XDG_STATE_HOME/less/history"
 export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"  # Python 3.13+
 export USER_CONFIG_PATH="$XDG_CONFIG_HOME/cookiecutter/config.yaml"
