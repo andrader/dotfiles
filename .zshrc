@@ -9,7 +9,9 @@ fi
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your Oh My Zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+export ZSH="$HOME/.local/share/oh-my-zsh"
+export ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump"
+mkdir -p "$HOME/.cache/zsh" "$HOME/.local/state/zsh"
 
 
 # Set name of the theme to load --- if set to "random", it will
@@ -127,7 +129,7 @@ eval "$(starship init zsh)"
 
 
 # history setup
-HISTFILE=~/.zsh_history
+HISTFILE=~/.local/state/zsh/history
 HISTSIZE=10000
 SAVEHIST=9999
 setopt EXTENDED_HISTORY        # Save timestamp with history entries
@@ -224,7 +226,7 @@ function install_extras() {
 export HOMEBREW_AUTO_UPDATE_SECS=15552000
 export HOMEBREW_NO_ENV_HINTS=1
 
-fpath+=~/.zfunc; autoload -Uz compinit; compinit
+fpath+=~/.config/zsh/functions; autoload -Uz compinit; compinit -d "$ZSH_COMPDUMP"
 
 export PATH="$HOME/bin:$PATH"
 

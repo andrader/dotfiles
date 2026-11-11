@@ -64,8 +64,9 @@ adlias() {
   local alias_name="${1%%=*}"
   local alias_cmd="${1#*=}"
   
-  echo "alias $alias_name=\"$alias_cmd\"" >> ~/.zshrc
-  source ~/.zshrc
+  local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
+  echo "alias $alias_name=\"$alias_cmd\"" >> "$zshrc"
+  source "$zshrc"
   echo "Added alias: $alias_name=\"$alias_cmd\""
 }
 gomain() { 

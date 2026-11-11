@@ -32,6 +32,15 @@ DOTFILES=(
     ".npmrc"
 )
 
+# Where a managed dotfile lives on this machine (.zshrc is under ZDOTDIR)
+home_path() {
+    case "$1" in
+        .zshrc) echo "$HOME_DIR/.config/zsh/.zshrc" ;;
+        .gitconfig) echo "$HOME_DIR/.config/git/config" ;;
+        *)      echo "$HOME_DIR/$1" ;;
+    esac
+}
+
 # Function to print colored output
 print_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -55,9 +64,12 @@ backup_file() {
     local file="$1"
     local backup_dir="$DOTFILES_DIR/backup"
     
-    if [[ -f "$HOME_DIR/$file" && ! -L "$HOME_DIR/$file" ]]; then
+    local src
+    src="$(home_path "$file")"
+
+    if [[ -f "$src" && ! -L "$src" ]]; then
         mkdir -p "$backup_dir"
-        cp "$HOME_DIR/$file" "$backup_dir/$file.$(date +%Y%m%d_%H%M%S)"
+        cp "$src" "$backup_dir/$file.$(date +%Y%m%d_%H%M%S)"
         print_warning "Backed up existing $file to $backup_dir"
     fi
 }
@@ -65,9 +77,10 @@ backup_file() {
 # Function to move file and create symlink
 install_dotfile() {
     local file="$1"
-    local home_file="$HOME_DIR/$file"
+    local home_file
+    home_file="$(home_path "$file")"
     local dotfiles_file="$DOTFILES_DIR/$file"
-    
+
     # Skip if file doesn't exist in home directory
     if [[ ! -f "$home_file" ]]; then
         print_warning "Skipping $file - not found in home directory"
@@ -94,6 +107,7 @@ install_dotfile() {
     fi
     
     # Create symlink
+    mkdir -p "$(dirname "$home_file")"
     ln -s "$dotfiles_file" "$home_file"
     print_success "Created symlink for $file"
 }
@@ -129,7 +143,8 @@ restore_backup() {
 
 # Function to add aliases.sh to .zshrc if not present
 add_aliases_to_zshrc() {
-    local zshrc_file="$HOME_DIR/.zshrc"
+    local zshrc_file
+    zshrc_file="$(home_path .zshrc)"
     local aliases_line="source $DOTFILES_DIR/aliases.sh"
     
     # Check if .zshrc exists
@@ -155,9 +170,10 @@ uninstall() {
     print_info "Uninstalling dotfiles symlinks..."
     
     for file in "${DOTFILES[@]}"; do
-        local home_file="$HOME_DIR/$file"
+        local home_file
+        home_file="$(home_path "$file")"
         local dotfiles_file="$DOTFILES_DIR/$file"
-        
+
         if [[ -L "$home_file" && "$(readlink "$home_file")" == "$dotfiles_file" ]]; then
             rm "$home_file"
             
