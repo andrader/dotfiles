@@ -79,7 +79,7 @@ eval "$(starship init zsh)"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git python zsh-interactive-cd uv)
+plugins=(git python zsh-interactive-cd)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -147,7 +147,7 @@ bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
 
 # source aliases
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCRIPT_DIR=$(dirname "$(realpath "$0")") # symlink to /Users/rubens/projects/dotfiles/.zshrc
 ALIASES_FILE="$SCRIPT_DIR/aliases.sh"
 if [ -f "$ALIASES_FILE" ]; then
   source "$ALIASES_FILE"
@@ -215,3 +215,34 @@ function install_extras() {
 
   
 }
+
+
+# Adjust how often this is run with `$HOMEBREW_AUTO_UPDATE_SECS` or disable with
+# `$HOMEBREW_NO_AUTO_UPDATE=1`. Hide these hints with `$HOMEBREW_NO_ENV_HINTS=1` (see `man brew`).
+
+# set 6 months, #$((6 * 30 * 24 * 60 * 60))
+export HOMEBREW_AUTO_UPDATE_SECS=15552000
+export HOMEBREW_NO_ENV_HINTS=1
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit
+
+export PATH="$HOME/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/rubens/.local/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/rubens/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
+# >>> deepseek-harness dsh >>>
+export PATH="$HOME/.local/bin:$PATH"
+# <<< deepseek-harness dsh <<<
+
+
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
