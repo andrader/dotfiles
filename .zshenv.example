@@ -1,0 +1,40 @@
+# Template for ~/.zshenv (copy it there; do NOT symlink or commit the real one).
+#   cp .zshenv.example ~/.zshenv && chmod 600 ~/.zshenv
+#
+# ~/.zshenv must stay in $HOME: zsh reads it first, and it tells zsh where the
+# rest of the config lives (ZDOTDIR). It is read by every zsh, including
+# non-interactive ones, so keep it fast and free of output.
+
+# --- PATH / toolchains ------------------------------------------------------
+# uv
+export PATH="$HOME/.local/bin:$PATH"
+# Rust (replaces sourcing ~/.cargo/env)
+export CARGO_HOME="$HOME/.local/share/cargo"
+export RUSTUP_HOME="$HOME/.local/share/rustup"
+export PATH="$CARGO_HOME/bin:$PATH"
+
+# --- Keep $HOME tidy: relocate tool config/state (XDG) ----------------------
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"                  # .zshrc/.zprofile live here
+export SHELL_SESSION_DIR="$XDG_STATE_HOME/zsh/sessions"
+export IPYTHONDIR="$XDG_CONFIG_HOME/ipython"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export npm_config_cache="$HOME/.cache/npm"
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"  # Python 3.13+
+export USER_CONFIG_PATH="$XDG_CONFIG_HOME/cookiecutter/config.yaml"
+export COPILOT_HOME="$XDG_CONFIG_HOME/copilot"          # GitHub Copilot CLI
+export OPENCLAW_STATE_DIR="$XDG_CONFIG_HOME/openclaw"   # OpenClaw state + config
+
+# Not set here on purpose:
+#  - DOCKER_CONFIG: Docker Desktop recreates ~/.docker regardless.
+#  - radian history: set `radian.global_history_file` in ~/.config/radian/profile.
+#  - git: ~/.config/git/config is read natively.
+#  - HISTFILE, ZSH, compdump: set in .zshrc.
+#  - DSH_HOME: dsh ignores it (it recreated ~/.dsh), so ~/.dsh stays.
+#  - macOS GUI apps (Ollama, VS Code from the Dock) don't read ~/.zshenv.
+
+# --- Secrets (real values live only in ~/.zshenv; never commit them) --------
+export DSH_TELEGRAM_TOKEN="<bot-token-from-BotFather>"
+export DSH_TELEGRAM_ALLOWED_USER_IDS="<telegram-user-id>"
