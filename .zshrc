@@ -187,7 +187,7 @@ fi
 [ -s "/home/rubens/.bun/_bun" ] && source "/home/rubens/.bun/_bun"
 
 # bun
-export BUN_INSTALL="$HOME/.bun"
+export BUN_INSTALL="$HOME/.local/share/bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # R library path
